@@ -1,11 +1,11 @@
 [package]
-name = "todo-crate-name"
+name = "easy-io"
 version = "0.1.0"
 authors = ["Tamas Kis"]
 edition = "2024"
-description = "TODO_DESCRIPTION"
-documentation = "https://docs.rs/TODO_CRATE_NAME_WITH_DASHES"
-repository = "https://github.com/tamaskis/TODO_REPO"
+description = "Easy interfaces for file i/o."
+documentation = "https://docs.rs/easy-io"
+repository = "https://github.com/tamaskis/easy-io"
 license = "MIT OR Apache-2.0"
 
 exclude = [".gitignore", ".github/", ".vscode/", "Cargo.lock", "book/"]

@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "todo-crate-name"
+name = "easy-io"
 version = "0.1.0"
