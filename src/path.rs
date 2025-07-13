@@ -18,7 +18,7 @@ use std::path::{Path, PathBuf};
 /// let home: String = get_home();
 /// ```
 pub fn get_home() -> String {
-    std::env::var("HOME").unwrap()
+    std::env::var("HOME").expect("HOME environment variable is not set.")
 }
 
 /// Get the current working directory.
@@ -40,7 +40,7 @@ pub fn get_home() -> String {
 /// let cwd: PathBuf = get_cwd();
 /// ```
 pub fn get_cwd() -> PathBuf {
-    std::env::current_dir().unwrap()
+    std::env::current_dir().expect("Failed to get the current working directory.")
 }
 
 /// Get the last component of a path (file or folder name).
@@ -83,7 +83,7 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
         .components()
         .next_back()
         .map(|comp| comp.as_os_str().to_string_lossy().into_owned())
-        .unwrap()
+        .expect("Failed to get the last path component.")
 }
 
 /// Change the current working directory.
@@ -123,7 +123,9 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
 /// assert_eq!(get_cwd(), original_dir);
 /// ```
 pub fn cd<P: AsRef<Path>>(path: P) {
-    std::env::set_current_dir(path).unwrap();
+    let path = path.as_ref();
+    std::env::set_current_dir(path)
+        .unwrap_or_else(|_| panic!("Failed to change directory to '{path:?}'."));
 }
 
 #[cfg(test)]

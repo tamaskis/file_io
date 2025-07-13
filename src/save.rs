@@ -38,6 +38,7 @@ use std::path::Path;
 /// save_string_to_file(content, path);
 /// ```
 pub fn save_string_to_file<P: AsRef<Path>>(content: &str, path: P) {
-    create_folder_for_file(&path);
-    std::fs::write(path, content).unwrap();
+    let path = path.as_ref();
+    create_folder_for_file(path);
+    std::fs::write(path, content).unwrap_or_else(|_| panic!("Failed to write to file '{path:?}'."));
 }

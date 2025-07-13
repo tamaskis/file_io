@@ -20,7 +20,8 @@ use tempfile::TempDir;
 /// This function is useful for obtaining a stable path to a temporary directory that can be used in
 /// unit tests (since temporary directories can have paths containing symlinks).
 pub(crate) fn get_temp_dir_path(temp_dir: &TempDir) -> PathBuf {
-    std::fs::canonicalize(temp_dir.path()).unwrap()
+    std::fs::canonicalize(temp_dir.path())
+        .expect("Failed to get the canonical path of the temporary directory.")
 }
 
 /// Assert that a folder exists at the specified path.
