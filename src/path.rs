@@ -106,8 +106,8 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
 /// // Store the current directory before changing it.
 /// let original_dir = get_cwd();
 ///
-/// // Verify we are in the `file-io` directory.
-/// assert!(original_dir.ends_with("file-io"));
+/// // Verify we are in the `file_io` directory.
+/// assert!(original_dir.ends_with("file_io"));
 ///
 /// // Change to the `src` directory.
 /// let new_dir = original_dir.join("src");
@@ -144,7 +144,7 @@ mod tests {
 
     #[test]
     fn test_get_cwd() {
-        assert_eq!(get_last_path_component(get_cwd()), "file-io");
+        assert_eq!(get_last_path_component(get_cwd()), "file_io");
     }
 
     #[test]
@@ -171,8 +171,8 @@ mod tests {
         // Store the current directory before changing it.
         let original_dir = get_cwd();
 
-        // Verify we are in the `file-io` directory.
-        assert!(original_dir.ends_with("file-io"));
+        // Verify we are in the `file_io` directory.
+        assert!(original_dir.ends_with("file_io"));
 
         // Change to the `src` directory.
         let new_dir = original_dir.join("src");
