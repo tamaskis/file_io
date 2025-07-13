@@ -53,7 +53,8 @@ use std::path::Path;
 /// assert_eq!(loaded_content, content);
 /// ```
 pub fn load_file_as_string<P: AsRef<Path>>(path: P) -> String {
-    std::fs::read_to_string(path).unwrap()
+    let path = path.as_ref();
+    std::fs::read_to_string(path).unwrap_or_else(|_| panic!("Failed to read file at '{path:?}'."))
 }
 
 #[cfg(test)]

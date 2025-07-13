@@ -34,7 +34,8 @@ use std::path::Path;
 pub fn create_folder<P: AsRef<Path>>(path: P) {
     let path = path.as_ref();
     if !path.exists() {
-        std::fs::create_dir_all(path).unwrap();
+        std::fs::create_dir_all(path)
+            .unwrap_or_else(|_| panic!("Failed to create folder at '{path:?}'."));
     }
 }
 
