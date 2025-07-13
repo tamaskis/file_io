@@ -2,3 +2,6 @@
 target/
 data/
 book/book/
+
+# Created by one of the doc tests.
+folder/

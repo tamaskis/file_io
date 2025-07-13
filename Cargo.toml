@@ -1,11 +1,11 @@
 [package]
-name = "easy-io"
+name = "file-io"
 version = "0.1.0"
 authors = ["Tamas Kis"]
 edition = "2024"
 description = "Easy interfaces for file i/o."
-documentation = "https://docs.rs/easy-io"
-repository = "https://github.com/tamaskis/easy-io"
+documentation = "https://docs.rs/file-io"
+repository = "https://github.com/tamaskis/file-io"
 license = "MIT OR Apache-2.0"
 
 exclude = [".gitignore", ".github/", ".vscode/", "Cargo.lock", "book/"]
@@ -14,5 +14,8 @@ exclude = [".gitignore", ".github/", ".vscode/", "Cargo.lock", "book/"]
 rustdoc-args = [ "--html-in-header", "src/docs-header.html" ]
 
 [dependencies]
+walkdir = "2.5.0"
 
 [dev-dependencies]
+temp-env = "0.3.6"
+tempfile = "3.20.0"
