@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+1. Fixed all references to the GitHub repository after it was renamed from `file-io` to `file_io`.
+
 ## 0.1.2
 
 1. Better error messages.

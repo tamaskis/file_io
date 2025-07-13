@@ -87,7 +87,6 @@ pub fn replace_str_in_files<P: AsRef<Path>>(path: P, old_string: &str, new_strin
 mod tests {
     use super::*;
     use crate::test_utils::get_temp_dir_path;
-    use std::fs;
     use tempfile::tempdir;
 
     #[test]
@@ -159,13 +158,9 @@ mod tests {
         // Get the path to the temporary directory.
         let temp_dir_path = get_temp_dir_path(&temp_dir);
 
-        // Create a nested directory.
-        let nested_dir = temp_dir_path.join("nested");
-        fs::create_dir(&nested_dir).unwrap();
-
         // File paths.
         let root_file_path = temp_dir_path.join("root.txt");
-        let nested_file_path = nested_dir.join("nested.txt");
+        let nested_file_path = temp_dir_path.join("nested/nested.txt");
 
         // Create files in the root and nested directories.
         save_string_to_file("replace me", &root_file_path);
