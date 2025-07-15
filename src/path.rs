@@ -1,5 +1,7 @@
 use std::path::{Path, PathBuf};
 
+// TODO: tests with all documented path options.
+
 /// Retrieves the user's home directory from the `$HOME` environment variable.
 ///
 /// # Returns
@@ -62,7 +64,6 @@ pub fn get_cwd() -> PathBuf {
 /// ## File path
 ///
 /// ```
-/// use std::path::Path;
 /// use file_io::get_last_path_component;
 ///
 /// let name = get_last_path_component("/some/path/to/file.txt");
@@ -72,18 +73,17 @@ pub fn get_cwd() -> PathBuf {
 /// ## Folder path
 ///
 /// ```
-/// use std::path::Path;
 /// use file_io::get_last_path_component;
 ///
 /// let name = get_last_path_component("some/path/to/folder");
 /// assert_eq!(name, "folder");
 /// ```
-pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
+pub fn get_last_path_component<P: AsRef<Path> + ?Sized>(path: &P) -> &str {
     path.as_ref()
         .components()
         .next_back()
-        .map(|comp| comp.as_os_str().to_string_lossy().into_owned())
-        .expect("Failed to get the last path component.")
+        .map(|comp| comp.as_os_str().to_str().unwrap())
+        .unwrap()
 }
 
 /// Get the file name (including any extension).
@@ -104,16 +104,14 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
 ///
 /// ```
 /// use file_io::get_file_name;
-/// use std::path::Path;
 ///
 /// let file_name = get_file_name("/some/path/to/file.txt");
 /// assert_eq!(file_name, "file.txt");
 /// ```
-pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
-    let path = path.as_ref();
-    path.file_name()
+pub fn get_file_name<P: AsRef<Path> + ?Sized>(path: &P) -> &str {
+    path.as_ref()
+        .file_name()
         .and_then(|s| s.to_str())
-        .map(String::from)
         .expect("Failed to get the file name.")
 }
 
@@ -135,17 +133,41 @@ pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
 ///
 /// ```
 /// use file_io::get_file_stem;
-/// use std::path::Path;
 ///
-/// let file_name = get_file_stem("/some/path/to/file.txt");
-/// assert_eq!(file_name, "file");
+/// let file_stem = get_file_stem("/some/path/to/file.txt");
+/// assert_eq!(file_stem, "file");
 /// ```
-pub fn get_file_stem<P: AsRef<Path>>(path: P) -> String {
-    let path = path.as_ref();
-    path.file_stem()
+pub fn get_file_stem<P: AsRef<Path> + ?Sized>(path: &P) -> &str {
+    path.as_ref()
+        .file_stem()
         .and_then(|s| s.to_str())
-        .map(String::from)
         .expect("Failed to get the file stem.")
+}
+
+/// Get the file extension.
+///
+/// # Arguments
+///     
+/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+///
+/// # Returns
+///
+/// The file extension. If the file has no extension, or if the extension cannot be determined, this
+/// function returns an empty string.
+///
+/// # Example
+///
+/// ```
+/// use file_io::get_file_extension;
+///
+/// let file_extension = get_file_extension("/some/path/to/file.txt");
+/// assert_eq!(file_extension, "txt");
+/// ```
+pub fn get_file_extension<P: AsRef<Path> + ?Sized>(path: &P) -> &str {
+    path.as_ref()
+        .extension()
+        .and_then(|s| s.to_str())
+        .unwrap_or("")
 }
 
 /// Change the current working directory.
@@ -184,7 +206,7 @@ pub fn get_file_stem<P: AsRef<Path>>(path: P) -> String {
 /// // Verify we are back in the original directory.
 /// assert_eq!(get_cwd(), original_dir);
 /// ```
-pub fn cd<P: AsRef<Path>>(path: P) {
+pub fn cd<P: AsRef<Path>>(path: &P) {
     let path = path.as_ref();
     std::env::set_current_dir(path)
         .unwrap_or_else(|_| panic!("Failed to change directory to '{path:?}'."));
@@ -206,7 +228,7 @@ mod tests {
 
     #[test]
     fn test_get_cwd() {
-        assert_eq!(get_last_path_component(get_cwd()), "file_io");
+        assert_eq!(get_last_path_component(&get_cwd()), "file_io");
     }
 
     #[test]
@@ -250,6 +272,18 @@ mod tests {
         assert_eq!(get_file_stem("some/path/to/file"), "file");
         assert_eq!(get_file_stem("/file"), "file");
         assert_eq!(get_file_stem("file"), "file");
+    }
+
+    #[test]
+    fn test_get_file_extension() {
+        assert_eq!(get_file_extension("/some/path/to/file.txt"), "txt");
+        assert_eq!(get_file_extension("some/path/to/file.txt"), "txt");
+        assert_eq!(get_file_extension("/file.txt"), "txt");
+        assert_eq!(get_file_extension("file.txt"), "txt");
+        assert_eq!(get_file_extension("/some/path/to/file"), "");
+        assert_eq!(get_file_extension("some/path/to/file"), "");
+        assert_eq!(get_file_extension("/file"), "");
+        assert_eq!(get_file_extension("file"), "");
     }
 
     #[test]

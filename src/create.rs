@@ -1,5 +1,7 @@
 use std::path::Path;
 
+// TODO: tests with all documented path options.
+
 /// Creates a new folder at the specified path if it does not already exist.
 ///
 /// # Arguments
