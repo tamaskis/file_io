@@ -86,6 +86,68 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
         .expect("Failed to get the last path component.")
 }
 
+/// Get the file name (including any extension).
+///
+/// # Arguments
+///
+/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+///
+/// # Returns
+///
+/// The file name (including any extension).
+///
+/// # Panics
+///
+/// If the file name cannot be determined.
+///
+/// # Example
+///
+/// ```
+/// use file_io::get_file_name;
+/// use std::path::Path;
+///
+/// let file_name = get_file_name("/some/path/to/file.txt");
+/// assert_eq!(file_name, "file.txt");
+/// ```
+pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
+    let path = path.as_ref();
+    path.file_name()
+        .and_then(|s| s.to_str())
+        .map(String::from)
+        .expect("Failed to get the file name.")
+}
+
+/// Get the file stem (i.e. file name without its extension).
+///
+/// # Arguments
+///
+/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+///
+/// # Returns
+///
+/// The file stem (i.e. the file name without its extension).
+///
+/// # Panics
+///
+/// If the file stem cannot be determined.
+///
+/// # Example
+///
+/// ```
+/// use file_io::get_file_stem;
+/// use std::path::Path;
+///
+/// let file_name = get_file_stem("/some/path/to/file.txt");
+/// assert_eq!(file_name, "file");
+/// ```
+pub fn get_file_stem<P: AsRef<Path>>(path: P) -> String {
+    let path = path.as_ref();
+    path.file_stem()
+        .and_then(|s| s.to_str())
+        .map(String::from)
+        .expect("Failed to get the file stem.")
+}
+
 /// Change the current working directory.
 ///
 /// # Arguments
@@ -164,6 +226,30 @@ mod tests {
         assert_eq!(get_last_path_component("/folder"), "folder");
         assert_eq!(get_last_path_component("folder/"), "folder");
         assert_eq!(get_last_path_component("folder"), "folder");
+    }
+
+    #[test]
+    fn test_get_file_name() {
+        assert_eq!(get_file_name("/some/path/to/file.txt"), "file.txt");
+        assert_eq!(get_file_name("some/path/to/file.txt"), "file.txt");
+        assert_eq!(get_file_name("/file.txt"), "file.txt");
+        assert_eq!(get_file_name("file.txt"), "file.txt");
+        assert_eq!(get_file_name("/some/path/to/file"), "file");
+        assert_eq!(get_file_name("some/path/to/file"), "file");
+        assert_eq!(get_file_name("/file"), "file");
+        assert_eq!(get_file_name("file"), "file");
+    }
+
+    #[test]
+    fn test_get_file_stem() {
+        assert_eq!(get_file_stem("/some/path/to/file.txt"), "file");
+        assert_eq!(get_file_stem("some/path/to/file.txt"), "file");
+        assert_eq!(get_file_stem("/file.txt"), "file");
+        assert_eq!(get_file_stem("file.txt"), "file");
+        assert_eq!(get_file_stem("/some/path/to/file"), "file");
+        assert_eq!(get_file_stem("some/path/to/file"), "file");
+        assert_eq!(get_file_stem("/file"), "file");
+        assert_eq!(get_file_stem("file"), "file");
     }
 
     #[test]
