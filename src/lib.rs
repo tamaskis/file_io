@@ -20,8 +20,8 @@ pub(crate) mod save;
 
 // Re-exports.
 pub use cd::{CdGuard, cd};
-pub use create::{create_folder, create_folder_for_file};
-pub use delete::delete_folder;
+pub use create::{copy_file, create_folder, create_folder_for_file};
+pub use delete::{delete_file, delete_folder};
 pub use load::load_file_as_string;
 pub use modify::{replace_str_in_file, replace_str_in_files};
 pub use path::{
