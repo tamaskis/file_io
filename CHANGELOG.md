@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+1. Added `copy_file` and `delete_file` functions.
+
 ## 0.1.5
 
 1. Added `get_file_extension`, `delete_folder`, and `to_path_buf` functions.

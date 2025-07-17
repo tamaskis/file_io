@@ -13,6 +13,10 @@ use std::path::Path;
 ///
 /// If some error is encountered while creating the file or writing to it.
 ///
+/// # Note
+///
+/// This function will create the parent folder for the file if it does not already exist.
+///
 /// # Examples
 ///
 /// ## Using a string literal
