@@ -30,7 +30,7 @@ jobs:
       - name: Lint  # Lint using Clippy.
         run: cargo clippy --no-deps --all-features
       - name: Docs  # Ensure that docs can be generated for this crate.
-        run: cargo doc --no-deps --all-features
+        run: RUSTDOCFLAGS="-D warnings" cargo doc --no-deps --all-features
       - name: Publishing dry run  # Ensure that this crate can be published.
         run: |
           # Run cargo publish --dry-run and capture output.

@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7
+
+1. TODO
+
 ## 0.1.6
 
 1. Added `copy_file` and `delete_file` functions.
