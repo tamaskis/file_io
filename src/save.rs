@@ -21,7 +21,7 @@ use std::path::Path;
 /// use file_io::save_string_to_file;
 ///
 /// let content: &str = "Hello, world!";
-/// let path: &str = "folder/subfolder/file_6.txt";
+/// let path: &str = "folder/subfolder_11/file_6.txt";
 ///
 /// save_string_to_file(content, path);
 /// ```
@@ -33,7 +33,7 @@ use std::path::Path;
 /// use std::path::Path;
 ///
 /// let content: &str = "Hello, world!";
-/// let path: &Path = Path::new("folder/subfolder/file_7.txt");
+/// let path: &Path = Path::new("folder/subfolder_12/file_7.txt");
 ///
 /// save_string_to_file(content, path);
 /// ```

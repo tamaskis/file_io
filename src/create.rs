@@ -18,7 +18,7 @@ use std::path::Path;
 /// ```
 /// use file_io::create_folder;
 ///
-/// let path: &str = "folder/subfolder";
+/// let path: &str = "folder/subfolder_1";
 /// create_folder(path);
 /// ```
 ///
@@ -28,7 +28,7 @@ use std::path::Path;
 /// use file_io::create_folder;
 /// use std::path::Path;
 ///
-/// let path: &Path = Path::new("folder/subfolder");
+/// let path: &Path = Path::new("folder/subfolder_2");
 /// create_folder(path);
 /// ```
 pub fn create_folder<P: AsRef<Path>>(path: P) {
@@ -57,9 +57,9 @@ pub fn create_folder<P: AsRef<Path>>(path: P) {
 /// ```
 /// use file_io::create_folder_for_file;
 ///     
-/// let path: &str = "folder/subfolder/file_1.txt";
+/// let path: &str = "folder/subfolder_3/file_1.txt";
 ///
-/// // This will create "folder/subfolder" if it does not exist.
+/// // This will create "folder/subfolder_3" if it does not exist.
 /// create_folder_for_file(path);
 /// ```
 ///
@@ -69,9 +69,9 @@ pub fn create_folder<P: AsRef<Path>>(path: P) {
 /// use file_io::create_folder_for_file;
 /// use std::path::Path;
 ///
-/// let path: &Path = Path::new("folder/subfolder/file_2.txt");
+/// let path: &Path = Path::new("folder/subfolder_4/file_2.txt");
 ///
-/// // This will create "folder/subfolder" if it does not exist.
+/// // This will create "folder/subfolder_4" if it does not exist.
 /// create_folder_for_file(path);
 /// ```
 pub fn create_folder_for_file<P: AsRef<Path>>(path: P) {
@@ -84,58 +84,52 @@ pub fn create_folder_for_file<P: AsRef<Path>>(path: P) {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::test_utils::{assert_folder_exists, get_temp_dir_path};
+    use crate::{
+        delete::delete_folder,
+        path::to_path_buf,
+        test_utils::{assert_folder_exists, get_temp_dir_path},
+    };
     use tempfile::tempdir;
 
     #[test]
-    fn test_create_folder_basic() {
-        // Create a temporary directory to work in.
-        let temp_dir = tempdir().unwrap();
-
-        // Define the new folder path.
-        let new_folder = get_temp_dir_path(&temp_dir).join("new_folder");
-
-        // The new folder should not exist yet.
-        assert!(!new_folder.exists());
-
-        // Create the new folder.
-        create_folder(&new_folder);
-
-        // Now the new folder should exist.
-        assert_folder_exists(&new_folder);
-
-        // Try creating the folder again (should not panic or error).
-        create_folder(&new_folder);
-
-        // The new folder should still exist.
-        assert_folder_exists(new_folder);
-    }
-
-    #[test]
-    fn test_create_folder_str() {
+    fn test_create_delete_folder_basic() {
         // Create a temporary directory to work in.
         let temp_dir = tempdir().unwrap();
 
         // Define the new folder path.
         let new_folder_path = get_temp_dir_path(&temp_dir).join("new_folder");
 
-        // Define the new folder path as a string.
-        let new_folder_str = new_folder_path.to_str().unwrap();
+        // New folder path in different formats.
+        let new_folder_paths: Vec<Box<dyn AsRef<Path>>> = vec![
+            Box::new(new_folder_path.to_str().unwrap()), // &str
+            Box::new(new_folder_path.to_str().unwrap().to_string()), // String
+            Box::new(new_folder_path.as_path()),         // Path
+            Box::new(new_folder_path.clone()),           // PathBuf
+        ];
 
-        // The new folder should not exist yet.
-        assert!(!new_folder_path.exists());
+        // Test with all different path formats.
+        for new_folder_path in new_folder_paths {
+            // Get a reference to this path representation (i.e. "unbox").
+            let new_folder_path: &dyn AsRef<Path> = new_folder_path.as_ref();
 
-        // Create the new folder.
-        create_folder(new_folder_str);
+            // The new folder should not exist yet.
+            assert!(!to_path_buf(new_folder_path).exists());
 
-        // Now the new folder should exist.
-        assert_folder_exists(&new_folder_path);
+            // Create the new folder.
+            create_folder(new_folder_path);
 
-        // Try creating the folder again (should not panic or error).
-        create_folder(new_folder_str);
+            // Now the new folder should exist.
+            assert_folder_exists(new_folder_path);
 
-        // The new folder should still exist.
-        assert_folder_exists(&new_folder_path);
+            // Try creating the folder again (should not panic or error).
+            create_folder(new_folder_path);
+
+            // The new folder should still exist.
+            assert_folder_exists(new_folder_path);
+
+            // Delete the new folder.
+            delete_folder(new_folder_path);
+        }
     }
 
     #[test]
@@ -154,29 +148,49 @@ mod tests {
     }
 
     #[test]
-    fn test_create_folder_for_file_basic() {
+    fn test_create_folder_for_file() {
         // Create a temporary directory to work in.
         let temp_dir = tempdir().unwrap();
 
         // Define a file path that requires a parent directory.
-        let path = get_temp_dir_path(&temp_dir).join("a/b/c/file.txt");
+        let file_path = get_temp_dir_path(&temp_dir).join("a/b/c/file.txt");
 
-        // The parent directory should not exist yet.
-        assert!(!path.parent().unwrap().exists());
+        // File path in different formats.
+        let file_paths: Vec<Box<dyn AsRef<Path>>> = vec![
+            Box::new(file_path.to_str().unwrap()),             // &str
+            Box::new(file_path.to_str().unwrap().to_string()), // String
+            Box::new(file_path.as_path()),                     // Path
+            Box::new(file_path.clone()),                       // PathBuf
+        ];
 
-        // Create the parent directory for the file.
-        create_folder_for_file(&path);
+        // Test with all different path formats.
+        for file_path in file_paths {
+            // Get a reference to this path representation (i.e. "unbox").
+            let file_path = file_path.as_ref();
 
-        // Now the parent directory should exist.
-        assert_folder_exists(path.parent().unwrap());
+            // File path as a pathbuf.
+            let file_path_buf = to_path_buf(file_path);
 
-        // The file itself should not exist yet.
-        assert!(!path.exists());
+            // The parent directory should not exist yet.
+            assert!(!file_path_buf.parent().unwrap().exists());
 
-        // Call `create_folder_for_file` again (should not panic or error).
-        create_folder_for_file(&path);
+            // Create the parent directory for the file.
+            create_folder_for_file(file_path);
 
-        // The parent directory should still exist.
-        assert_folder_exists(path.parent().unwrap());
+            // Now the parent directory should exist.
+            assert_folder_exists(file_path_buf.parent().unwrap());
+
+            // The file itself should not exist yet.
+            assert!(!file_path_buf.exists());
+
+            // Call `create_folder_for_file` again (should not panic or error).
+            create_folder_for_file(file_path);
+
+            // The parent directory should still exist.
+            assert_folder_exists(file_path_buf.parent().unwrap());
+
+            // Delete the parent directory.
+            delete_folder(file_path_buf.parent().unwrap());
+        }
     }
 }
