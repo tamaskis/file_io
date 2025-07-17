@@ -86,11 +86,10 @@ pub fn replace_str_in_files<P: AsRef<Path>>(path: P, old_string: &str, new_strin
                 panic::catch_unwind(|| replace_str_in_file(entry_path, old_string, new_string));
 
             // If the replacement failed, print an error message to `stderr`.
-            if let Err(err) = result {
+            if result.is_err() {
                 eprintln!(
-                    "Failed to replace string in file '{}': {:?}",
+                    "Failed to replace string in file '{}'.",
                     entry_path.display(),
-                    err
                 );
             }
         }

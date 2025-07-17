@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.8
+
+1. Reduced the length of the printout to `stderr` when `replace_str_in_files` hits an error.
+
 ## 0.1.7
 
 1. Updated `replace_str_in_files` to print a warning to `stderr` instead of `panicking` when it fails to write to a file.
