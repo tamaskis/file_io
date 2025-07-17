@@ -62,7 +62,6 @@ pub fn get_cwd() -> PathBuf {
 /// ## File path
 ///
 /// ```
-/// use std::path::Path;
 /// use file_io::get_last_path_component;
 ///
 /// let name = get_last_path_component("/some/path/to/file.txt");
@@ -72,7 +71,6 @@ pub fn get_cwd() -> PathBuf {
 /// ## Folder path
 ///
 /// ```
-/// use std::path::Path;
 /// use file_io::get_last_path_component;
 ///
 /// let name = get_last_path_component("some/path/to/folder");
@@ -83,7 +81,7 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
         .components()
         .next_back()
         .map(|comp| comp.as_os_str().to_string_lossy().into_owned())
-        .expect("Failed to get the last path component.")
+        .unwrap()
 }
 
 /// Get the file name (including any extension).
@@ -104,14 +102,13 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
 ///
 /// ```
 /// use file_io::get_file_name;
-/// use std::path::Path;
 ///
 /// let file_name = get_file_name("/some/path/to/file.txt");
 /// assert_eq!(file_name, "file.txt");
 /// ```
 pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
-    let path = path.as_ref();
-    path.file_name()
+    path.as_ref()
+        .file_name()
         .and_then(|s| s.to_str())
         .map(String::from)
         .expect("Failed to get the file name.")
@@ -135,65 +132,85 @@ pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
 ///
 /// ```
 /// use file_io::get_file_stem;
-/// use std::path::Path;
 ///
-/// let file_name = get_file_stem("/some/path/to/file.txt");
-/// assert_eq!(file_name, "file");
+/// let file_stem = get_file_stem("/some/path/to/file.txt");
+/// assert_eq!(file_stem, "file");
 /// ```
 pub fn get_file_stem<P: AsRef<Path>>(path: P) -> String {
-    let path = path.as_ref();
-    path.file_stem()
+    path.as_ref()
+        .file_stem()
         .and_then(|s| s.to_str())
         .map(String::from)
         .expect("Failed to get the file stem.")
 }
 
-/// Change the current working directory.
+/// Get the file extension.
 ///
 /// # Arguments
+///     
+/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
 ///
-/// * `path` - The path to change the current working directory to (can be a `&str`, `String`,
-///   `Path`, or `PathBuf`).
+/// # Returns
 ///
-/// # Panics
-///
-/// If `path` does not exist or cannot be accessed.
+/// The file extension. If the file has no extension, or if the extension cannot be determined, this
+/// function returns an empty string.
 ///
 /// # Example
 ///
 /// ```
-/// use file_io::{cd, get_cwd};
-/// use std::path::Path;
+/// use file_io::get_file_extension;
 ///
-/// // Store the current directory before changing it.
-/// let original_dir = get_cwd();
-///
-/// // Verify we are in the `file_io` directory.
-/// assert!(original_dir.ends_with("file_io"));
-///
-/// // Change to the `src` directory.
-/// let new_dir = original_dir.join("src");
-/// cd(&new_dir);
-///
-/// // Verify the current directory has changed.
-/// assert_eq!(get_cwd(), new_dir);
-///
-/// // Change back to the original directory.
-/// cd(&original_dir);
-///
-/// // Verify we are back in the original directory.
-/// assert_eq!(get_cwd(), original_dir);
+/// let file_extension = get_file_extension("/some/path/to/file.txt");
+/// assert_eq!(file_extension, "txt");
 /// ```
-pub fn cd<P: AsRef<Path>>(path: P) {
-    let path = path.as_ref();
-    std::env::set_current_dir(path)
-        .unwrap_or_else(|_| panic!("Failed to change directory to '{path:?}'."));
+pub fn get_file_extension<P: AsRef<Path>>(path: P) -> String {
+    path.as_ref()
+        .extension()
+        .and_then(|s| s.to_str())
+        .map(String::from)
+        .unwrap_or(String::from(""))
+}
+
+/// Converts a path to a `PathBuf`.
+///
+/// # Arguments
+///
+/// * `path` - The path to convert (can be a `&str`, `String`, `Path`, or `PathBuf`).
+///
+/// # Returns
+///
+/// A `PathBuf` representation of the path.
+///
+/// # Examples
+///
+/// ## Using a string literal
+///
+/// ```
+/// use file_io::to_path_buf;
+/// use std::path::PathBuf;
+///
+/// let path: &str = "folder/subfolder_9/file.txt";
+/// let path_buf: PathBuf = to_path_buf(path);
+/// ```
+///
+/// ## Using a `Path` reference
+///
+/// ```
+/// use file_io::to_path_buf;
+/// use std::path::{Path, PathBuf};
+///
+/// let path: &Path = Path::new("folder/subfolder_10/file.txt");
+/// let path_buf: PathBuf = to_path_buf(path);
+/// ```
+pub fn to_path_buf<P: AsRef<Path>>(path: P) -> PathBuf {
+    path.as_ref().to_path_buf()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
     use crate::get_cwd;
+    use serial_test::serial;
     use temp_env::with_var;
 
     #[test]
@@ -205,12 +222,13 @@ mod tests {
     }
 
     #[test]
+    #[serial]
     fn test_get_cwd() {
         assert_eq!(get_last_path_component(get_cwd()), "file_io");
     }
 
     #[test]
-    fn test_get_last_path_component() {
+    fn test_get_last_path_component_str() {
         assert_eq!(
             get_last_path_component("/some/path/to/file.txt"),
             "file.txt"
@@ -229,7 +247,28 @@ mod tests {
     }
 
     #[test]
-    fn test_get_file_name() {
+    fn test_get_last_path_component_other_type_spot_checks() {
+        // Spot check with `String`.
+        assert_eq!(
+            get_last_path_component(String::from("/some/path/to/file.txt")),
+            "file.txt"
+        );
+
+        // Spot check with `Path`.
+        assert_eq!(
+            get_last_path_component(Path::new("/some/path/to/file.txt")),
+            "file.txt"
+        );
+
+        // Spot check with `PathBuf`.
+        assert_eq!(
+            get_last_path_component(PathBuf::from("/some/path/to/file.txt")),
+            "file.txt"
+        );
+    }
+
+    #[test]
+    fn test_get_file_name_str() {
         assert_eq!(get_file_name("/some/path/to/file.txt"), "file.txt");
         assert_eq!(get_file_name("some/path/to/file.txt"), "file.txt");
         assert_eq!(get_file_name("/file.txt"), "file.txt");
@@ -241,7 +280,28 @@ mod tests {
     }
 
     #[test]
-    fn test_get_file_stem() {
+    fn test_get_file_name_other_type_spot_checks() {
+        // Spot check with `String`.
+        assert_eq!(
+            get_file_name(String::from("/some/path/to/file.txt")),
+            "file.txt"
+        );
+
+        // Spot check with `Path`.
+        assert_eq!(
+            get_file_name(Path::new("/some/path/to/file.txt")),
+            "file.txt"
+        );
+
+        // Spot check with `PathBuf`.
+        assert_eq!(
+            get_file_name(PathBuf::from("/some/path/to/file.txt")),
+            "file.txt"
+        );
+    }
+
+    #[test]
+    fn test_get_file_stem_str() {
         assert_eq!(get_file_stem("/some/path/to/file.txt"), "file");
         assert_eq!(get_file_stem("some/path/to/file.txt"), "file");
         assert_eq!(get_file_stem("/file.txt"), "file");
@@ -253,24 +313,79 @@ mod tests {
     }
 
     #[test]
-    fn test_cd() {
-        // Store the current directory before changing it.
-        let original_dir = get_cwd();
+    fn test_get_file_stem_other_type_spot_checks() {
+        // Spot check with `String`.
+        assert_eq!(
+            get_file_stem(String::from("/some/path/to/file.txt")),
+            "file"
+        );
 
-        // Verify we are in the `file_io` directory.
-        assert!(original_dir.ends_with("file_io"));
+        // Spot check with `Path`.
+        assert_eq!(get_file_stem(Path::new("/some/path/to/file.txt")), "file");
 
-        // Change to the `src` directory.
-        let new_dir = original_dir.join("src");
-        cd(&new_dir);
+        // Spot check with `PathBuf`.
+        assert_eq!(
+            get_file_stem(PathBuf::from("/some/path/to/file.txt")),
+            "file"
+        );
+    }
 
-        // Verify the current directory has changed.
-        assert_eq!(get_cwd(), new_dir);
+    #[test]
+    fn test_get_file_extension_str() {
+        assert_eq!(get_file_extension("/some/path/to/file.txt"), "txt");
+        assert_eq!(get_file_extension("some/path/to/file.txt"), "txt");
+        assert_eq!(get_file_extension("/file.txt"), "txt");
+        assert_eq!(get_file_extension("file.txt"), "txt");
+        assert_eq!(get_file_extension("/some/path/to/file"), "");
+        assert_eq!(get_file_extension("some/path/to/file"), "");
+        assert_eq!(get_file_extension("/file"), "");
+        assert_eq!(get_file_extension("file"), "");
+    }
 
-        // Change back to the original directory.
-        cd(&original_dir);
+    #[test]
+    fn test_get_file_extension_other_type_spot_checks() {
+        // Spot check with `String`.
+        assert_eq!(
+            get_file_extension(String::from("/some/path/to/file.txt")),
+            "txt"
+        );
 
-        // Verify we are back in the original directory.
-        assert_eq!(get_cwd(), original_dir);
+        // Spot check with `Path`.
+        assert_eq!(
+            get_file_extension(Path::new("/some/path/to/file.txt")),
+            "txt"
+        );
+
+        // Spot check with `PathBuf`.
+        assert_eq!(
+            get_file_extension(PathBuf::from("/some/path/to/file.txt")),
+            "txt"
+        );
+    }
+
+    #[test]
+    fn test_to_path_buf() {
+        // Test with a `&str`.
+        let path_str: &str = "folder/subfolder/file.txt";
+        let path_buf: PathBuf = to_path_buf(path_str);
+        assert_eq!(path_buf.to_str().unwrap(), path_str);
+
+        // Test with a `String`.
+        let path_string: String = String::from("folder/subfolder/file.txt");
+        let path_buf: PathBuf = to_path_buf(path_string);
+        assert_eq!(path_buf.to_str().unwrap(), "folder/subfolder/file.txt");
+
+        // Test with a `Path`.
+        let path: &Path = Path::new("folder/subfolder/file.txt");
+        let path_buf: PathBuf = to_path_buf(path);
+        assert_eq!(path_buf.to_str().unwrap(), "folder/subfolder/file.txt");
+
+        // Test with a `PathBuf`.
+        let path_buf_input: PathBuf = PathBuf::from("folder/subfolder/file.txt");
+        let path_buf_output: PathBuf = to_path_buf(path_buf_input);
+        assert_eq!(
+            path_buf_output.to_str().unwrap(),
+            "folder/subfolder/file.txt"
+        );
     }
 }

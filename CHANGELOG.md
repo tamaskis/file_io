@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.5
+
+1. Added `get_file_extension`, `delete_folder`, and `to_path_buf` functions.
+1. Updated the `cd` function to return a `CdGuard` which automatically restores the current working directory when it moves out of a scope.
+
 ## 0.1.4
 
 1. Added `get_file_name` and `get_file_stem` functions.

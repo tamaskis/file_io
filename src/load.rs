@@ -21,8 +21,9 @@ use std::path::Path;
 /// ```
 /// use file_io::{load_file_as_string, save_string_to_file};
 ///
+/// // Define the content and the path.
 /// let content: &str = "Hello, world!";
-/// let path: &str = "folder/subfolder/file_3.txt";
+/// let path: &str = "folder/subfolder_6/file_3.txt";
 ///
 /// // First, save the content to the file.
 /// save_string_to_file(content, path);
@@ -40,8 +41,9 @@ use std::path::Path;
 /// use file_io::{load_file_as_string, save_string_to_file};
 /// use std::path::Path;
 ///
+/// // Define the content and the path.
 /// let content: &str = "Hello, world!";
-/// let path: &Path = Path::new("folder/subfolder/file_4.txt");
+/// let path: &Path = Path::new("folder/subfolder_7/file_4.txt");
 ///
 /// // First, save the content to the file.
 /// save_string_to_file(content, path);
@@ -75,16 +77,30 @@ mod tests {
         // Path to the file.
         let file_path = temp_dir_path.join("test_file.txt");
 
-        // Content to save in the file.
-        let content = "Hello, world!";
+        // File path in different formats.
+        let file_paths: Vec<Box<dyn AsRef<Path>>> = vec![
+            Box::new(file_path.to_str().unwrap()),             // &str
+            Box::new(file_path.to_str().unwrap().to_string()), // String
+            Box::new(file_path.as_path()),                     // Path
+            Box::new(file_path.clone()),                       // PathBuf
+        ];
 
-        // Save the content to the file.
-        save_string_to_file(content, &file_path);
+        // Test with all different path formats.
+        for file_path in file_paths {
+            // Get a reference to this path representation (i.e. "unbox").
+            let file_path = file_path.as_ref();
 
-        // Load the content from the file.
-        let loaded_content = load_file_as_string(&file_path);
+            // Content to save in the file.
+            let content = "Hello, world!";
 
-        // Verify that the loaded content matches the original content.
-        assert_eq!(loaded_content, content);
+            // Save the content to the file.
+            save_string_to_file(content, file_path);
+
+            // Load the content from the file.
+            let loaded_content = load_file_as_string(file_path);
+
+            // Verify that the loaded content matches the original content.
+            assert_eq!(loaded_content, content);
+        }
     }
 }
