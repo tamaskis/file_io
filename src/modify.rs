@@ -1,5 +1,6 @@
 use crate::load::load_file_as_string;
 use crate::save::save_string_to_file;
+use std::panic;
 use std::path::Path;
 use walkdir::WalkDir;
 
@@ -35,9 +36,9 @@ use walkdir::WalkDir;
 /// let content = load_file_as_string(path);
 /// assert_eq!(content, "Goodbye, world!");
 /// ```
-pub fn replace_str_in_file<P: AsRef<Path> + ?Sized>(path: &P, old_string: &str, new_string: &str) {
+pub fn replace_str_in_file<P: AsRef<Path>>(path: P, old_string: &str, new_string: &str) {
     // Load the file into a string.
-    let content = load_file_as_string(path);
+    let content = load_file_as_string(&path);
 
     // Replace all instances of `old_string` with `new_string`.
     if content.contains(old_string) {
@@ -55,9 +56,10 @@ pub fn replace_str_in_file<P: AsRef<Path> + ?Sized>(path: &P, old_string: &str, 
 /// * `old_string` - The substring to find and replace in all files.
 /// * `new_string` - The replacement string.
 ///
-/// # Panics
+/// # Note
 ///
-/// If some error is encountered while reading from or writing to the files.
+/// This function will not panic if a single read/write fails (since this function may pull in
+/// private, inaccessible files). However, a warning will be printed to `stderr`.
 ///
 /// # Examples
 ///
@@ -78,7 +80,19 @@ pub fn replace_str_in_files<P: AsRef<Path>>(path: P, old_string: &str, new_strin
 
         // If the entry is a file, replace any instances of `old_string` with `new_string`.
         if entry_path.is_file() {
-            replace_str_in_file(&entry_path, old_string, new_string);
+            // We use `panic::catch_unwind` to handle any potential panics gracefully (since some
+            // folders could have private, inaccessible files).
+            let result =
+                panic::catch_unwind(|| replace_str_in_file(entry_path, old_string, new_string));
+
+            // If the replacement failed, print an error message to `stderr`.
+            if let Err(err) = result {
+                eprintln!(
+                    "Failed to replace string in file '{}': {:?}",
+                    entry_path.display(),
+                    err
+                );
+            }
         }
     }
 }

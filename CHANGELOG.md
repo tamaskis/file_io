@@ -2,7 +2,7 @@
 
 ## 0.1.7
 
-1. TODO
+1. Updated `replace_str_in_files` to print a warning to `stderr` instead of `panicking` when it fails to write to a file.
 
 ## 0.1.6
 
