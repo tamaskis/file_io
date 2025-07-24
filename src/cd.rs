@@ -64,7 +64,6 @@ impl Drop for CdGuard {
 ///
 /// ```
 /// use file_io::{cd, get_cwd};
-/// use std::path::Path;
 ///
 /// // Get the path to the original current working directory.
 /// let original_cwd_path = get_cwd();

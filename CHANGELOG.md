@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.9
+
+1. Added `copy_folder`, `print_folder_tree`, and `list_folder_contents` functions.
+
 ## 0.1.8
 
 1. Reduced the length of the printout to `stderr` when `replace_str_in_files` hits an error.

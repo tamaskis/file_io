@@ -81,62 +81,11 @@ pub fn create_folder_for_file<P: AsRef<Path>>(path: P) {
     }
 }
 
-/// Copies a file from one location to another.
-///
-/// # Arguments
-///
-/// * `from` - The source file path (can be a `&str`, `String`, `Path`, or `PathBuf`).
-/// * `to` - The destination file path (can be a `&str`, `String`, `Path`, or `PathBuf`).
-///
-/// # Panics
-///
-/// If the source file does not exist or cannot be accessed, or if the destination cannot be
-/// created.
-///
-/// # Note
-///
-/// This function will create the parent folder for the destination file if it does not already
-/// exist.
-///
-/// # Examples
-///
-/// ## Using string literals
-///
-/// ```
-/// use file_io::copy_file;
-///
-/// // Copy 'Cargo.toml' to 'folder/Cargo_new_1.toml'.
-/// let from: &str = "Cargo.toml";
-/// let to: &str = "folder/Cargo_new_1.toml";
-/// copy_file(from, to);
-/// ```
-///
-/// ## Using `Path` references
-///
-/// ```
-/// use file_io::copy_file;
-/// use std::path::Path;
-///
-/// // Copy 'Cargo.toml' to 'folder/Cargo_new_2.toml'.
-/// let from: &Path = Path::new("Cargo.toml");
-/// let to: &Path = Path::new("folder/Cargo_new_2.toml");
-/// copy_file(from, to);
-/// ```
-pub fn copy_file<P: AsRef<Path>, Q: AsRef<Path>>(from: P, to: Q) {
-    let from = from.as_ref();
-    let to = to.as_ref();
-    create_folder_for_file(to);
-    std::fs::copy(from, to)
-        .unwrap_or_else(|_| panic!("Failed to copy file from '{from:?}' to '{to:?}'."));
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::delete::{delete_file, delete_folder};
-    use crate::load::load_file_as_string;
+    use crate::delete::delete_folder;
     use crate::path::to_path_buf;
-    use crate::save::save_string_to_file;
     use crate::test_utils::{assert_folder_exists, get_temp_dir_path};
     use tempfile::tempdir;
 
@@ -240,65 +189,6 @@ mod tests {
 
             // Delete the parent directory.
             delete_folder(file_path_buf.parent().unwrap());
-        }
-    }
-
-    #[test]
-    fn test_copy_file() {
-        // Create a temporary directory to work in.
-        let temp_dir = tempdir().unwrap();
-
-        // Define the paths for the source file.
-        let source_path = get_temp_dir_path(&temp_dir).join("source.txt");
-        let source_paths: Vec<Box<dyn AsRef<Path>>> = vec![
-            Box::new(source_path.to_str().unwrap()),             // &str
-            Box::new(source_path.to_str().unwrap().to_string()), // String
-            Box::new(source_path.as_path()),                     // Path
-            Box::new(source_path.clone()),                       // PathBuf
-        ];
-
-        // Define the paths for the destination file.
-        let destination_path = get_temp_dir_path(&temp_dir).join("destination.txt");
-        let destination_paths: Vec<Box<dyn AsRef<Path>>> = vec![
-            Box::new(destination_path.clone()),   // PathBuf
-            Box::new(destination_path.as_path()), // Path
-            Box::new(destination_path.to_str().unwrap().to_string()), // String
-            Box::new(destination_path.to_str().unwrap()), // &str
-        ];
-
-        // Test with all different path formats.
-        for (source_path, destination_path) in source_paths.iter().zip(destination_paths) {
-            // Get a reference to these path representations (i.e. "unbox").
-            let source_path: &dyn AsRef<Path> = source_path.as_ref();
-            let destination_path: &dyn AsRef<Path> = destination_path.as_ref();
-
-            // The source and destination files shouldn't exist yet.
-            assert!(!to_path_buf(source_path).exists());
-            assert!(!to_path_buf(destination_path).exists());
-
-            // Create the source file.
-            save_string_to_file("Hello, world!", source_path);
-
-            // Now the source file should exist, but the destination file should not.
-            assert!(to_path_buf(source_path).exists());
-            assert!(!to_path_buf(destination_path).exists());
-
-            // Copy the file.
-            copy_file(source_path, destination_path);
-
-            // The destination file should now exist.
-            assert!(to_path_buf(destination_path).exists());
-
-            // Check that the contents of the copied file are identical.
-            assert_eq!(load_file_as_string(destination_path), "Hello, world!");
-
-            // Delete the source and destination files.
-            delete_file(source_path);
-            delete_file(destination_path);
-
-            // Verify that the source and destination files no longer exist.
-            assert!(!to_path_buf(source_path).exists());
-            assert!(!to_path_buf(destination_path).exists());
         }
     }
 }
