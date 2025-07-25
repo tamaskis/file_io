@@ -17,14 +17,35 @@ use walkdir::WalkDir;
 ///
 /// If some error is encountered while reading from or writing to the file.
 ///
-/// # Example
+/// # Examples
+///
+/// ## Using a string literal
+///
+/// ```
+/// use file_io::{load_file_as_string, replace_str_in_file, save_string_to_file};
+///
+/// // Path to file.
+/// let path: &str = "folder/subfolder_8/file_5.txt";
+///
+/// // Create a file with some content.
+/// save_string_to_file("Hello, world!", path);
+///
+/// // Replace "Hello" with "Goodbye".
+/// replace_str_in_file(path, "Hello", "Goodbye");
+///
+/// // Verify that the content was replaced.
+/// let content = load_file_as_string(path);
+/// assert_eq!(content, "Goodbye, world!");
+/// ```
+///
+/// ## Using a `Path` reference
 ///
 /// ```
 /// use file_io::{load_file_as_string, replace_str_in_file, save_string_to_file};
 /// use std::path::Path;
 ///
 /// // Path to file.
-/// let path: &Path = Path::new("folder/subfolder_8/file_5.txt");
+/// let path: &Path = Path::new("folder/subfolder_8/file_6.txt");
 ///
 /// // Create a file with some content.
 /// save_string_to_file("Hello, world!", path);
@@ -73,7 +94,7 @@ pub fn replace_str_in_file<P: AsRef<Path>>(path: P, old_string: &str, new_string
 /// replace_str_in_files(dir, "foo", "bar");
 /// ```
 pub fn replace_str_in_files<P: AsRef<Path>>(path: P, old_string: &str, new_string: &str) {
-    // Iterate over all entries (files and folders) in the directory and its subdirectories.
+    // Traverse over all entries (files and folders) in the directory and its subdirectories.
     for entry in WalkDir::new(path).into_iter().filter_map(Result::ok) {
         // Get the path of the current entry.
         let entry_path = entry.path();
