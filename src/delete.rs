@@ -4,7 +4,8 @@ use std::path::Path;
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the folder to delete (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the folder to delete (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///
@@ -63,7 +64,8 @@ pub fn delete_folder<P: AsRef<Path>>(path: P) {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the file to delete (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the file to delete (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///

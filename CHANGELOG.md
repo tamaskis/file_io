@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.10
+
+1. Improved documentation.
+
 ## 0.1.9
 
 1. Added `copy_folder`, `print_folder_tree`, and `list_folder_contents` functions.

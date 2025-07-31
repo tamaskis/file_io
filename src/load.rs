@@ -4,7 +4,8 @@ use std::path::Path;
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the file to load (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the file to load (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Returns
 ///

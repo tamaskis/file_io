@@ -47,7 +47,7 @@ pub fn get_cwd() -> PathBuf {
 ///
 /// # Arguments
 ///
-/// * `path` - Path (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - Path (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///
@@ -88,7 +88,7 @@ pub fn get_last_path_component<P: AsRef<Path>>(path: P) -> String {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the file (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///
@@ -118,7 +118,7 @@ pub fn get_file_name<P: AsRef<Path>>(path: P) -> String {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the file (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///
@@ -148,7 +148,7 @@ pub fn get_file_stem<P: AsRef<Path>>(path: P) -> String {
 ///
 /// # Arguments
 ///     
-/// * `path` - The path to the file (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the file (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///
@@ -175,7 +175,7 @@ pub fn get_file_extension<P: AsRef<Path>>(path: P) -> String {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to convert (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to convert (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///

@@ -4,7 +4,7 @@ use std::path::{Path, PathBuf};
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the folder (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the folder (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///
