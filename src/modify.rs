@@ -8,8 +8,8 @@ use walkdir::WalkDir;
 ///
 /// # Arguments
 ///
-/// * `path` - Path to the file where the replacements will be performed (can be a `&str`, `String`,
-///   `Path`, or `PathBuf`).
+/// * `path` - Path to the file where the replacements will be performed (can be a `&str`,
+///   [`String`], [`Path`], or [`std::path::PathBuf`]).
 /// * `old_string` - The substring to find and replace in all files.
 /// * `new_string` - The replacement string.
 ///
@@ -73,7 +73,7 @@ pub fn replace_str_in_file<P: AsRef<Path>>(path: P, old_string: &str, new_string
 /// # Arguments
 ///
 /// * `path` - Path to the directory or file where the replacements will be performed (can be a
-///   `&str`, `String`, `Path`, or `PathBuf`).
+///   `&str`, [`String`], [`Path`], or [`std::path::PathBuf`]).
 /// * `old_string` - The substring to find and replace in all files.
 /// * `new_string` - The replacement string.
 ///

@@ -6,8 +6,10 @@ use walkdir::WalkDir;
 ///
 /// # Arguments
 ///
-/// * `from` - The source file path (can be a `&str`, `String`, `Path`, or `PathBuf`).
-/// * `to` - The destination file path (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `from` - The source file path (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
+/// * `to` - The destination file path (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///
@@ -55,8 +57,10 @@ pub fn copy_file<P: AsRef<Path>, Q: AsRef<Path>>(from: P, to: Q) {
 ///
 /// # Arguments
 ///
-/// * `from` - The source folder path (can be a `&str`, `String`, `Path`, or `PathBuf`).
-/// * `to` - The destination folder path (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `from` - The source folder path (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
+/// * `to` - The destination folder path (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///

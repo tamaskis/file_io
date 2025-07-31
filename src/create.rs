@@ -4,8 +4,8 @@ use std::path::Path;
 ///
 /// # Arguments
 ///
-/// * `path` - The path where the folder should be created (can be a `&str`, `String`, `Path`, or
-///   `PathBuf`).
+/// * `path` - The path where the folder should be created (can be a `&str`, [`String`], [`Path`],
+///   or [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///
@@ -44,7 +44,7 @@ pub fn create_folder<P: AsRef<Path>>(path: P) {
 /// # Arguments
 ///
 /// * `path` - The path to the file for which the parent folder should be created (can be a `&str`,
-///   `String`, `Path`, or `PathBuf`).
+///   [`String`], [`Path`], or [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///

@@ -6,8 +6,8 @@ use std::path::Path;
 /// # Arguments
 ///
 /// * `content` - The string content to save to the file.
-/// * `path` - The path where the file should be saved (can be a `&str`, `String`, `Path`, or
-///   `PathBuf`).
+/// * `path` - The path where the file should be saved (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Panics
 ///

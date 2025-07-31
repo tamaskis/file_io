@@ -16,8 +16,8 @@ impl CdGuard {
     ///
     /// # Arguments
     ///
-    /// * `path` - The path to change the current working directory to (can be a `&str`, `String`,
-    ///   `Path`, or `PathBuf`).
+    /// * `path` - The path to change the current working directory to (can be a `&str`, [`String`],
+    ///   [`Path`], or [`PathBuf`]).
     ///
     /// # Returns
     ///
@@ -48,8 +48,8 @@ impl Drop for CdGuard {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to change the current working directory to (can be a `&str`, `String`,
-///   `Path`, or `PathBuf`).
+/// * `path` - The path to change the current working directory to (can be a `&str`, [`String`],
+///   [`Path`], or [`PathBuf`]).
 ///
 /// # Returns
 ///

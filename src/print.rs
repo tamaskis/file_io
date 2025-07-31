@@ -39,7 +39,8 @@ fn helper<W: std::io::Write>(path: &Path, prefix: String, is_last: bool, output:
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the folder to print (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the folder to print (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 /// * `output` - The output stream to write the tree structure to.
 fn write_folder_tree<P: AsRef<Path>, W: std::io::Write>(path: P, output: &mut W) {
     // Convert the input path to a Path reference.
@@ -63,7 +64,8 @@ fn write_folder_tree<P: AsRef<Path>, W: std::io::Write>(path: P, output: &mut W)
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the folder to print (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the folder to print (can be a `&str`, [`String`], [`Path`], or
+///   [`std::path::PathBuf`]).
 ///
 /// # Examples
 ///

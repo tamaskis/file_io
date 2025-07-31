@@ -28,7 +28,7 @@ pub(crate) fn get_temp_dir_path(temp_dir: &TempDir) -> PathBuf {
 ///
 /// # Arguments
 ///
-/// * `path` - The path to the folder (can be a `&str`, `String`, `Path`, or `PathBuf`).
+/// * `path` - The path to the folder (can be a `&str`, [`String`], [`Path`], or [`PathBuf`]).
 ///
 /// # Panics
 ///
