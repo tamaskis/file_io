@@ -1,6 +1,6 @@
 [package]
 name = "file-io"
-version = "0.1.10"
+version = "0.1.11"
 authors = ["Tamas Kis"]
 edition = "2024"
 description = "Easy interfaces for file i/o."
@@ -15,8 +15,9 @@ rustdoc-args = [ "--html-in-header", "src/docs-header.html" ]
 
 [dependencies]
 walkdir = "2.5.0"
+slab = "0.4.11" # 0.4.10 is yanked
 
 [dev-dependencies]
 serial_test = "3.2.0"
 temp-env = "0.3.6"
-tempfile = "3.20.0"
+tempfile = "3.22.0"
