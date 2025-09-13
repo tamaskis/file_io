@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.11
+
+1. Updated `tempfile` dev dependency from `3.20.0` to `3.22.0`.
+1. Added `slab` dependency at `0.4.11` (since `0.4.10` is yanked).
+
 ## 0.1.10
 
 1. Improved documentation.
